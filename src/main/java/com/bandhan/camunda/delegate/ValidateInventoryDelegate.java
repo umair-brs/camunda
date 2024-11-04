@@ -1,29 +1,33 @@
 package com.bandhan.camunda.delegate;
 
+import com.bandhan.camunda.entity.Inventory;
+import com.bandhan.camunda.repository.InventoryRepo;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service("validateInventory")
 public class ValidateInventoryDelegate implements JavaDelegate {
 
+    @Autowired
+    private InventoryRepo inventoryRepository;
+
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        // Retrieve item details from execution variables
         String itemId = (String) execution.getVariable("itemId");
         Integer noOfItems = (Integer) execution.getVariable("noOfItems");
-
-        // Custom logic to check inventory (assuming available quantity is fetched from database)
         int availableQuantity = checkInventory(itemId);
-
         boolean isItemPresent = availableQuantity >= noOfItems;
-
-        // Set variable for the process flow
         execution.setVariable("isItemPresent", isItemPresent);
     }
 
     private int checkInventory(String itemId) {
-        // Placeholder: Replace with actual DB call
-        return 100;  // Example: assume 100 items available for simplicity
+        // Convert itemId to an integer if necessary
+        int id = Integer.parseInt(itemId);  // Assuming itemId is a string representation of an integer
+        Optional<Inventory> inventoryItem = inventoryRepository.findByItemId(id);
+        return inventoryItem.map(Inventory::getInventoryBalance).orElse(0);  // Return 0 if item not found
     }
 }
