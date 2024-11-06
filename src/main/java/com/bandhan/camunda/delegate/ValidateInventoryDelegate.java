@@ -21,6 +21,8 @@ public class ValidateInventoryDelegate implements JavaDelegate {
         Integer noOfItems = (Integer) execution.getVariable("noOfItems");
         int availableQuantity = checkInventory(itemId);
         boolean isItemPresent = availableQuantity >= noOfItems;
+        Inventory inventory = getInventory(itemId);
+        execution.setVariable("itemType", inventory.getItemType().name());
         execution.setVariable("isItemPresent", isItemPresent);
     }
 
@@ -28,5 +30,10 @@ public class ValidateInventoryDelegate implements JavaDelegate {
         // Convert itemId to an integer if necessary
         Optional<Inventory> inventoryItem = inventoryRepository.findByItemId(itemId);
         return inventoryItem.map(Inventory::getInventoryBalance).orElse(0);  // Return 0 if item not found
+    }
+
+    Inventory getInventory(Integer itemId) {
+        Optional<Inventory> inventoryItem = inventoryRepository.findByItemId(itemId);
+        return inventoryItem.get();
     }
 }
