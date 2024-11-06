@@ -19,6 +19,7 @@ public class CamundaConfig extends DefaultProcessEngineConfiguration {
         config.setDataSource(dataSource);
         config.setTransactionManager(transactionManager);
         config.setDatabaseSchemaUpdate("true");
+        config.setJdbcBatchProcessing(false);
         config.setJobExecutorActivate(true);
         return config;
     }

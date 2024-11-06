@@ -17,17 +17,16 @@ public class ValidateInventoryDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        String itemId = (String) execution.getVariable("itemId");
+        Integer itemId = (Integer) execution.getVariable("itemId");
         Integer noOfItems = (Integer) execution.getVariable("noOfItems");
         int availableQuantity = checkInventory(itemId);
         boolean isItemPresent = availableQuantity >= noOfItems;
         execution.setVariable("isItemPresent", isItemPresent);
     }
 
-    private int checkInventory(String itemId) {
+    private int checkInventory(Integer itemId) {
         // Convert itemId to an integer if necessary
-        int id = Integer.parseInt(itemId);  // Assuming itemId is a string representation of an integer
-        Optional<Inventory> inventoryItem = inventoryRepository.findByItemId(id);
+        Optional<Inventory> inventoryItem = inventoryRepository.findByItemId(itemId);
         return inventoryItem.map(Inventory::getInventoryBalance).orElse(0);  // Return 0 if item not found
     }
 }

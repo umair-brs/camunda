@@ -46,8 +46,10 @@ public class OrderServiceImpl implements OrderService {
         variables.put("itemId", request.getItemId());
         variables.put("customerDetails", request.getCustomerDetails());
         variables.put("noOfItems", request.getNoOfItems());
+        variables.put("customerType", request.getCustomerDetails().getCustomerType());
+        variables.put("name", request.getCustomerDetails().getName());
 
-        runtimeService.startProcessInstanceByKey("order-process", variables);
+        runtimeService.startProcessInstanceByKey("processOrder", variables);
     }
 
     @Override
